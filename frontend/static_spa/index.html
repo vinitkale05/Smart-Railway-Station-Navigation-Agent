@@ -696,7 +696,16 @@
       }
     }
 
-    // --- WebSocket Dispatch Connection ---
+    let disruptionPollTimer = null;
+    function startAlertPolling() {
+      if (!disruptionPollTimer) {
+        disruptionPollTimer = setInterval(() => {
+          loadDisruptionsData();
+        }, 4000);
+      }
+    }
+
+    // --- WebSocket Dispatch Connection & Cloud Polling Fallback ---
     function initWebSocket() {
       if (!state.sessionId) {
         setTimeout(initWebSocket, 500);
@@ -710,6 +719,10 @@
 
         state.socket.onopen = () => {
           document.getElementById('wsStatusText').textContent = 'Live Dispatch Connected';
+          if (disruptionPollTimer) {
+            clearInterval(disruptionPollTimer);
+            disruptionPollTimer = null;
+          }
         };
 
         state.socket.onmessage = (event) => {
@@ -721,12 +734,21 @@
           }
         };
 
+        state.socket.onerror = () => {
+          // Graceful fallback for serverless deployments (Vercel)
+          document.getElementById('wsStatusText').textContent = 'Live Cloud Sync Active';
+          startAlertPolling();
+        };
+
         state.socket.onclose = () => {
-          document.getElementById('wsStatusText').textContent = 'Reconnecting...';
-          setTimeout(initWebSocket, 2000); // Automatic reconnection
+          document.getElementById('wsStatusText').textContent = 'Live Cloud Sync Active';
+          startAlertPolling();
+          setTimeout(initWebSocket, 10000); // Retry WS periodically
         };
       } catch (e) {
-        console.warn('WS Init failed:', e);
+        console.warn('WS Init failed, falling back to HTTP sync:', e);
+        document.getElementById('wsStatusText').textContent = 'Live Cloud Sync Active';
+        startAlertPolling();
       }
     }
 

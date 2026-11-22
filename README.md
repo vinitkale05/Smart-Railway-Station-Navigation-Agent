@@ -189,6 +189,31 @@ agentic ai/
 
 ---
 
+## 🚀 Deploy to Vercel
+
+The project is structured with zero-configuration serverless deployment on [Vercel](https://vercel.com):
+
+### 1. Import Repository into Vercel
+1. Log into your [Vercel Dashboard](https://vercel.com/dashboard) and click **Add New... > Project**.
+2. Select your imported GitHub repository: `Smart-Railway-Station-Navigation-Agent`.
+3. Vercel will automatically detect `vercel.json`, `requirements.txt`, and `api/index.py`.
+
+### 2. Environment Variables
+Add the following in **Settings > Environment Variables**:
+- `GEMINI_API_KEY`: Your Google Gemini API key.
+- `ADMIN_USERNAME`: Station admin username (e.g. `station_admin`).
+- `ADMIN_PASSWORD_HASH`: Admin password (e.g. `admin123`).
+- `JWT_SECRET`: Secret string for token hashing.
+
+### 3. Deploy
+Click **Deploy**. Vercel will:
+- Serve the high-performance interactive SPA from `public/index.html` across Vercel's global Edge CDN.
+- Run the ASGI backend serverlessly via `api/index.py` using Python 3.
+- Automatically seed Pune Junction station graph and train data into SQLite `/tmp` memory on cold start.
+- Provide automatic polling fallback for live alert synchronization and disruptions.
+
+---
+
 ## 👥 Academic Credits
 - **Course:** Final Year Major Project
 - **Department:** Computer Science and Engineering (Artificial Intelligence)

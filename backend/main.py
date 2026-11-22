@@ -24,9 +24,13 @@ async def health_check(request):
     })
 
 async def serve_spa_index(request):
-    static_index = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "static_spa", "index.html")
-    if os.path.exists(static_index):
-        return FileResponse(static_index)
+    candidates = [
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "public", "index.html"),
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "static_spa", "index.html")
+    ]
+    for static_index in candidates:
+        if os.path.exists(static_index):
+            return FileResponse(static_index)
     return JSONResponse({"message": "Smart Railway Station Navigation Agent API Running."})
 
 routes = [

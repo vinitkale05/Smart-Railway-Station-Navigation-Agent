@@ -1,13 +1,35 @@
+import os
+import shutil
 import sqlite3
 import json
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 from backend.config import settings
 
-DB_PATH = settings.DATABASE_URL.replace("sqlite:///", "")
+def get_db_path() -> str:
+    """
+    Returns the appropriate SQLite DB path.
+    On Vercel and serverless platforms, root directory is read-only, so /tmp is used.
+    """
+    configured_path = settings.DATABASE_URL.replace("sqlite:///", "")
+    
+    # Check if running in Vercel or serverless environment
+    if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME") or not os.access(os.path.dirname(os.path.abspath(configured_path)) or ".", os.W_OK):
+        tmp_db = "/tmp/railway_station.db"
+        if not os.path.exists(tmp_db):
+            # If repo has pre-seeded DB, copy it
+            root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            src_db = os.path.join(root_dir, "railway_station.db")
+            if os.path.exists(src_db):
+                try:
+                    shutil.copyfile(src_db, tmp_db)
+                except Exception:
+                    pass
+        return tmp_db
+    return configured_path
 
 def get_connection():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(get_db_path(), check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 

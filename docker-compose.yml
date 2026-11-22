@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ADMIN_USERNAME=station_admin
+      - ADMIN_PASSWORD_HASH=admin123
+      - JWT_SECRET=mit-adt-ai-super-secret-key-2026
+      - DATABASE_URL=sqlite:///./railway_station.db
+    volumes:
+      - station_data:/app
+    restart: unless-stopped
+
+volumes:
+  station_data:

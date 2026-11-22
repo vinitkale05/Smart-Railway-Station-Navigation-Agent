@@ -1,0 +1,719 @@
+{
+  "summary": {
+    "total_test_queries": 65,
+    "tool_selection_accuracy_percent": 96.92,
+    "tool_selection_target": ">= 90%",
+    "routing_accuracy_percent": 96.92,
+    "routing_accuracy_target": ">= 95%",
+    "hallucination_rate_percent": 0.0,
+    "hallucination_rate_target": "0.0%",
+    "clarification_precision_percent": 100.0,
+    "clarification_precision_target": ">= 85%",
+    "p90_latency_ms": 2.95,
+    "latency_target": "< 4000 ms",
+    "average_latency_ms": 2.17,
+    "all_metrics_passed": true
+  },
+  "details": [
+    {
+      "id": "Q01",
+      "query": "Where is train 12951?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.65,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q02",
+      "query": "I have train 12951 this evening. I need step-free access to the platform, and I'm carrying heavy luggage.",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.47,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q03",
+      "query": "What platform does Deccan Queen 12124 depart from?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.88,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q04",
+      "query": "Where is the nearest washroom?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 3.2,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q05",
+      "query": "Where can I get drinking water?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.59,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q06",
+      "query": "I am thirsty, where is cold water available?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 3.13,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q07",
+      "query": "I have train 12124, where is my platform, and where can I get water first?",
+      "called_tools": [
+        "get_train_info",
+        "find_facility",
+        "find_route",
+        "find_route"
+      ],
+      "latency_ms": 3.27,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q08",
+      "query": "Where is my train?",
+      "called_tools": [],
+      "latency_ms": 1.3,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q09",
+      "query": "What platform is my train departing from?",
+      "called_tools": [],
+      "latency_ms": 1.02,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q10",
+      "query": "I need wheelchair assistance to board Vande Bharat 22224.",
+      "called_tools": [
+        "get_train_info",
+        "find_facility",
+        "find_route",
+        "find_route"
+      ],
+      "latency_ms": 3.12,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q11",
+      "query": "Where is the IRCTC executive lounge?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.52,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q12",
+      "query": "Where can I deposit my luggage in a cloak room?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.92,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q13",
+      "query": "How do I reach the May I Help You information counter?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.7,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q14",
+      "query": "Where are the general ticket booking counters?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.08,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q15",
+      "query": "Is the lift to Platform 2 and 3 working?",
+      "called_tools": [
+        "get_lift_status"
+      ],
+      "latency_ms": 1.11,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q16",
+      "query": "What trains are departing from Platform 3?",
+      "called_tools": [
+        "get_platform_status"
+      ],
+      "latency_ms": 1.12,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q17",
+      "query": "I am traveling on 12157 Hutatma Express. Can you guide me to the platform?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.87,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q18",
+      "query": "Where can I buy food or tea near the concourse?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.68,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q19",
+      "query": "I have an elderly passenger traveling on train 11077 Jhelum Express. We need a path without stairs.",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.08,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q20",
+      "query": "Where is train 12780 Goa Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 3.7,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q21",
+      "query": "Where is train 12130 Azad Hind Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.08,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q22",
+      "query": "Can you show me the way to Pragati Express 12126?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.47,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q23",
+      "query": "Where is Sinhagad Express 11010?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.1,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q24",
+      "query": "I need an accessible restroom suitable for wheelchair users.",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.89,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q25",
+      "query": "Where can I find a cup of hot chai?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.67,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q26",
+      "query": "Is there a ladies waiting room at the station?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.88,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q27",
+      "query": "Where is train 12138 Punjab Mail standing?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.68,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q28",
+      "query": "What is the status of Platform 1?",
+      "called_tools": [
+        "get_platform_status"
+      ],
+      "latency_ms": 1.11,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q29",
+      "query": "What platform does Chennai Mail 12164 arrive at?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.94,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q30",
+      "query": "Show me the path to Secunderabad Shatabdi 12026.",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.83,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q31",
+      "query": "Where is train 22149 Ernakulam Superfast?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.9,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q32",
+      "query": "I am traveling on 12135 Nagpur Superfast. Guide me with step-free path because I have heavy baggage.",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.67,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q33",
+      "query": "Where is Duronto Express 12264?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.47,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q34",
+      "query": "Where is the wheelchair booth for assistance?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.91,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q35",
+      "query": "I have train 11020 Konark Express, where can I grab food before boarding?",
+      "called_tools": [
+        "get_train_info",
+        "find_facility",
+        "find_route",
+        "find_route"
+      ],
+      "latency_ms": 3.52,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q36",
+      "query": "Tell me what platform train 12940 Jaipur Superfast leaves from.",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.64,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q37",
+      "query": "Where is train 17013 Hyderabad Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.56,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q38",
+      "query": "Can you check if the lift at Platform 4/5 is working?",
+      "called_tools": [
+        "get_lift_status"
+      ],
+      "latency_ms": 1.15,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q39",
+      "query": "Where is train 12850 Bilaspur Superfast?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.01,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q40",
+      "query": "Is there a toilet nearby?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.78,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q41",
+      "query": "Where can I buy a book or magazine?",
+      "called_tools": [],
+      "latency_ms": 2.23,
+      "tool_match": false,
+      "hallucination": false
+    },
+    {
+      "id": "Q42",
+      "query": "What trains are at Platform 4?",
+      "called_tools": [
+        "get_platform_status"
+      ],
+      "latency_ms": 1.24,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q43",
+      "query": "Guide me to 12116 Siddheshwar Express avoiding stairs.",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.86,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q44",
+      "query": "Where is train 19312 Indore Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.87,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q45",
+      "query": "Where is train 11087 Veraval Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.82,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q46",
+      "query": "I am traveling on train 11090 Bhagat Ki Kothi. I have a baby stroller.",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.14,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q47",
+      "query": "Where is train 12222 Howrah Duronto?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.2,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q48",
+      "query": "Where is train 20821 Pune Santragachi Humsafar?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.78,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q49",
+      "query": "I need help finding my coach, where is the station help desk?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.1,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q50",
+      "query": "Where is train 11046 Deekshabhoomi Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.9,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q51",
+      "query": "Where is train 12169 Pune Solapur Intercity?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.66,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q52",
+      "query": "Where is train 11029 Koyna Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.95,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q53",
+      "query": "Where is train 12493 Darshan Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.81,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q54",
+      "query": "Where is train 11005 Chalukya Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.78,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q55",
+      "query": "Where is train 12103 Lucknow Superfast?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.64,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q56",
+      "query": "Where is train 15030 Gorakhpur Express?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.66,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q57",
+      "query": "Can I get drinking water on Platform 2?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.69,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q58",
+      "query": "Where is the nearest restroom from Gate 1?",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.51,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q59",
+      "query": "I am looking for a quiet air-conditioned waiting room.",
+      "called_tools": [
+        "find_facility",
+        "find_route"
+      ],
+      "latency_ms": 2.96,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q60",
+      "query": "Where is my train at?",
+      "called_tools": [],
+      "latency_ms": 1.07,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q61",
+      "query": "I need to know my platform.",
+      "called_tools": [],
+      "latency_ms": 1.08,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q62",
+      "query": "Where is the lift at Platform 6?",
+      "called_tools": [
+        "get_platform_status"
+      ],
+      "latency_ms": 1.17,
+      "tool_match": false,
+      "hallucination": false
+    },
+    {
+      "id": "Q63",
+      "query": "I am traveling on 11301 Udyan Express. Where is the train?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.99,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q64",
+      "query": "Where is 12150 Danapur Superfast?",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 1.89,
+      "tool_match": true,
+      "hallucination": false
+    },
+    {
+      "id": "Q65",
+      "query": "Take me to train 16507 Jodhpur Express with step free access.",
+      "called_tools": [
+        "get_train_info",
+        "find_route"
+      ],
+      "latency_ms": 2.32,
+      "tool_match": true,
+      "hallucination": false
+    }
+  ]
+}

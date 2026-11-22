@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Railway Station Navigation Agent - Pune Junction</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            railway: {
+              primary: '#0B3B60',
+              secondary: '#1A659E',
+              accent: '#F7A072',
+              danger: '#EF4444',
+              success: '#10B981',
+              warning: '#F59E0B'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulse-ring {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.4); opacity: 0.3; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+    .pulse-pin {
+      transform-origin: center;
+      animation: pulse-ring 2s infinite ease-in-out;
+    }
+    /* High contrast mode styles */
+    .high-contrast {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+    }
+    .high-contrast .bg-white {
+      background-color: #121212 !important;
+      color: #ffffff !important;
+      border-color: #ffff00 !important;
+    }
+    .high-contrast .text-gray-600, .high-contrast .text-gray-500, .high-contrast .text-slate-600 {
+      color: #e5e5e5 !important;
+    }
+    .high-contrast button {
+      border: 2px solid #ffff00 !important;
+    }
+    .high-contrast .text-blue-600, .high-contrast .text-railway-secondary {
+      color: #ffff00 !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col">
+
+  <!-- Live Alert Banner (FR-10) -->
+  <div id="alertBanner" class="hidden bg-amber-500 text-white px-4 py-3 shadow-md flex items-center justify-between transition-all duration-300">
+    <div class="flex items-center space-x-3">
+      <i class="fa-solid fa-triangle-exclamation text-xl animate-bounce"></i>
+      <div>
+        <span id="alertTitle" class="font-bold text-sm block">Platform Update Alert</span>
+        <span id="alertMessage" class="text-xs">Attention: Train platform has been changed.</span>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button onclick="dismissAlert()" class="bg-amber-600 hover:bg-amber-700 px-3 py-1 rounded text-xs font-semibold">Dismiss</button>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="bg-railway-primary text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('welcome')">
+        <div class="bg-white text-railway-primary w-10 h-10 rounded-lg flex items-center justify-center font-black text-xl shadow">
+          <i class="fa-solid fa-train-subway"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-tight flex items-center gap-2">
+            Smart Railway Station Navigation Agent
+            <span class="text-xs font-normal bg-blue-800 text-blue-200 px-2 py-0.5 rounded-full">Pune Jn (PUNE)</span>
+          </h1>
+          <p class="text-xs text-blue-200 hidden sm:block">MIT-ADT University AI Major Project • Accessibility & Multi-intent Routing</p>
+        </div>
+      </div>
+
+      <!-- Navigation & Mode Tabs -->
+      <div class="flex items-center space-x-2 sm:space-x-4">
+        <button onclick="switchTab('chat')" id="navChat" class="px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blue-800 transition flex items-center gap-1.5 bg-blue-800">
+          <i class="fa-solid fa-comments"></i> <span class="hidden md:inline">Agent Chat</span>
+        </button>
+        <button onclick="switchTab('navigation')" id="navNavigation" class="px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blue-800 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-map-location-dot"></i> <span class="hidden md:inline">Navigation Map</span>
+        </button>
+        <button onclick="switchTab('trains')" id="navTrains" class="px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blue-800 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-clock"></i> <span class="hidden md:inline">Train Status</span>
+        </button>
+        <button onclick="switchTab('admin')" id="navAdmin" class="px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blue-800 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-shield-halved"></i> <span class="hidden md:inline">Admin</span>
+        </button>
+
+        <!-- High Contrast Mode Toggle (Section 9.3) -->
+        <button onclick="toggleHighContrast()" title="Toggle High Contrast Mode" class="p-2 rounded-lg bg-blue-900 hover:bg-blue-800 text-yellow-300">
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 flex flex-col">
+
+    <!-- 1. WELCOME & SETUP SCREEN -->
+    <section id="screenWelcome" class="hidden max-w-2xl mx-auto my-auto py-8 w-full">
+      <div class="bg-white rounded-2xl shadow-xl p-8 border border-slate-200">
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 text-railway-secondary mb-3">
+            <i class="fa-solid fa-person-walking-luggage text-3xl"></i>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-800">Welcome to Pune Junction</h2>
+          <p class="text-slate-600 text-sm mt-1">Let our AI agent guide you smoothly from station entry to your train coach.</p>
+        </div>
+
+        <form id="setupForm" onsubmit="handleSetupSubmit(event)" class="space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Select Railway Station</label>
+            <select id="setupStation" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+              <option value="pune_junction">Pune Junction (PUNE) - Central Railway</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Your Train Number or Name (Optional)</label>
+            <div class="relative">
+              <input type="text" id="setupTrain" placeholder="e.g. 12951, 12124 (Deccan Queen), 22224" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none">
+              <span class="absolute right-3 top-2.5 text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Try 12951</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1">Your Starting Location</label>
+            <select id="setupStartingLocation" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+              <option value="gate_1_main">Gate 1 (Main Entrance / Concourse)</option>
+              <option value="gate_2_reservation">Gate 2 (PRS Ticket Office Entrance)</option>
+              <option value="gate_4_parking">Gate 4 (Parking & Auto Stand)</option>
+              <option value="gate_3_east">Gate 3 (East Side Sassoon Exit)</option>
+            </select>
+          </div>
+
+          <!-- Accessibility Preferences -->
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+            <div class="flex items-start space-x-3">
+              <input type="checkbox" id="setupAccessible" class="mt-1 w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
+              <div>
+                <label for="setupAccessible" class="font-semibold text-slate-800 text-sm cursor-pointer flex items-center gap-1.5">
+                  <i class="fa-solid fa-wheelchair text-blue-600"></i> Require Step-Free / Accessible Route
+                </label>
+                <p class="text-xs text-slate-600 mt-0.5">Mandates lifts and gentle ramps; strictly avoids stairs. Recommended for wheelchairs, heavy luggage, senior citizens, and baby strollers.</p>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-railway-primary hover:bg-blue-800 text-white font-semibold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <span>Start Station Journey</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. CHAT SCREEN (Split Layout: Conversational Chat on Left, Dedicated Live Alerts on Right) -->
+    <section id="screenChat" class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-0">
+      
+      <!-- Left Column: Pure Agent Conversational Chat (8 cols) -->
+      <div class="lg:col-span-8 flex flex-col bg-white rounded-2xl shadow border border-slate-200 overflow-hidden">
+        <!-- Session Bar -->
+        <div class="px-6 py-3 bg-slate-100 border-b border-slate-200 flex flex-wrap items-center justify-between text-xs text-slate-600 gap-2">
+          <div class="flex items-center space-x-4">
+            <span><strong class="text-slate-800">Station:</strong> Pune Junction (PUNE)</span>
+            <span id="sessionTrainBadge" class="hidden bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full font-semibold"></span>
+            <span id="sessionAccessibleBadge" class="hidden bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full font-semibold"><i class="fa-solid fa-wheelchair"></i> Step-free</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="inline-block w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+            <span id="wsStatusText" class="font-medium text-emerald-700">Live Dispatch Connected</span>
+          </div>
+        </div>
+
+        <!-- Messages Thread (Only User & Agent Messages, Never mixed with Broadcast Alerts) -->
+        <div id="chatMessages" class="flex-1 p-6 overflow-y-auto space-y-4">
+          <!-- Default Initial Message -->
+          <div class="flex items-start space-x-3">
+            <div class="w-8 h-8 rounded-full bg-railway-primary text-white flex items-center justify-center text-sm font-bold shadow flex-shrink-0">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 text-slate-800 max-w-xl shadow-sm text-sm">
+              <p>Namaste! I am your <strong>Smart Railway Station Navigation Agent</strong> at Pune Junction.</p>
+              <p class="mt-1 text-slate-600">I can find your train platform, calculate step-free paths, guide you to washrooms or food stalls, and answer your journey questions.</p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button onclick="sendQuickQuery('Where is train 12951?')" class="text-xs bg-white hover:bg-blue-50 border border-slate-300 text-blue-700 font-medium px-2.5 py-1.5 rounded-full transition shadow-sm">
+                  Where is train 12951?
+                </button>
+                <button onclick="sendQuickQuery('I have train 12951 this evening. I need step-free access to the platform, and I\'m carrying heavy luggage.')" class="text-xs bg-white hover:bg-blue-50 border border-slate-300 text-blue-700 font-medium px-2.5 py-1.5 rounded-full transition shadow-sm">
+                  Step-free route (Train 12951)
+                </button>
+                <button onclick="sendQuickQuery('Where is the nearest washroom?')" class="text-xs bg-white hover:bg-blue-50 border border-slate-300 text-blue-700 font-medium px-2.5 py-1.5 rounded-full transition shadow-sm">
+                  Nearest washroom
+                </button>
+                <button onclick="sendQuickQuery('I have train 12124, where is my platform, and where can I get water first?')" class="text-xs bg-white hover:bg-blue-50 border border-slate-300 text-blue-700 font-medium px-2.5 py-1.5 rounded-full transition shadow-sm">
+                  Train 12124 & water first
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Action Buttons Strip -->
+        <div id="quickActionContainer" class="px-6 py-2 bg-slate-50 border-t border-slate-200 flex items-center gap-2 overflow-x-auto text-xs hidden">
+        </div>
+
+        <!-- Chat Input Box -->
+        <div class="p-4 bg-white border-t border-slate-200">
+          <form onsubmit="handleChatSubmit(event)" class="flex items-center space-x-2">
+            <!-- Voice Input Button (Stretch Goal FR-15) -->
+            <button type="button" onclick="startVoiceInput()" id="micBtn" title="Voice Input" class="p-3 text-slate-500 hover:text-railway-primary hover:bg-slate-100 rounded-xl transition">
+              <i class="fa-solid fa-microphone text-lg"></i>
+            </button>
+
+            <input type="text" id="chatInput" placeholder="Ask anything, e.g. 'Where is train 12951 and where is drinking water?'" class="flex-1 px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+            
+            <button type="submit" id="sendBtn" class="bg-railway-primary hover:bg-blue-800 text-white px-5 py-3 rounded-xl font-semibold shadow transition flex items-center gap-1.5 text-sm">
+              <span>Send</span> <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Dedicated Station Disruption & Change Alerts Table Panel (4 cols) -->
+      <div class="lg:col-span-4 flex flex-col bg-white rounded-2xl shadow border border-slate-200 p-4 overflow-hidden">
+        
+        <!-- Header with Live Pulse & Refresh -->
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-2">
+          <div class="flex items-center space-x-2 font-bold text-sm text-slate-800">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-600"></span>
+            </span>
+            <span>Station Disruptions & Alerts</span>
+          </div>
+          <button onclick="loadDisruptionsData()" title="Refresh Alerts" class="text-xs text-blue-600 hover:text-blue-800 p-1 flex items-center gap-1 font-semibold">
+            <i class="fa-solid fa-arrows-rotate"></i> <span>Refresh</span>
+          </button>
+        </div>
+
+        <!-- Disruption Sub-Tabs -->
+        <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl mb-3 text-xs font-semibold">
+          <button id="tabPlatChangesBtn" onclick="switchAlertSubTab('platform')" class="flex-1 py-1.5 px-2 rounded-lg bg-white text-blue-700 shadow-sm transition flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-signs-post"></i> <span>Platform Changes</span>
+            <span id="badgePlatCount" class="bg-blue-100 text-blue-800 text-[10px] px-1.5 py-0.2 rounded-full">0</span>
+          </button>
+          <button id="tabClosuresBtn" onclick="switchAlertSubTab('closures')" class="flex-1 py-1.5 px-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-ban"></i> <span>Lift/Facility Closures</span>
+            <span id="badgeClosureCount" class="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.2 rounded-full">0</span>
+          </button>
+        </div>
+
+        <!-- 1. Platform Changes Alert Table (Triggered by Publish Platform Change) -->
+        <div id="subviewPlatformChanges" class="flex-1 flex flex-col overflow-hidden">
+          <div class="text-[11px] text-slate-500 mb-1 flex items-center justify-between">
+            <span>Live Platform Reassignments & Delays</span>
+            <span class="text-[10px] text-emerald-600 font-bold">Auto-Replanned</span>
+          </div>
+
+          <div class="flex-1 overflow-x-auto overflow-y-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-100 text-slate-800 font-semibold uppercase text-[10px] sticky top-0">
+                <tr>
+                  <th class="py-2 px-2.5">Train</th>
+                  <th class="py-2 px-2">New Plat</th>
+                  <th class="py-2 px-2">Delay</th>
+                  <th class="py-2 px-2">Reason</th>
+                  <th class="py-2 px-2 text-center">Map</th>
+                </tr>
+              </thead>
+              <tbody id="tablePlatformChangesBody" class="divide-y divide-slate-100 text-[11px]">
+                <tr id="emptyPlatformRow">
+                  <td colspan="5" class="py-10 text-center text-slate-400">
+                    <i class="fa-solid fa-circle-check text-emerald-500 text-lg mb-1 block"></i>
+                    All trains on regular platforms
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 2. Lift & Facility Closures Alert Table (Triggered by Mark Lift / Facility Closure) -->
+        <div id="subviewClosures" class="hidden flex-1 flex flex-col overflow-hidden">
+          <div class="text-[11px] text-slate-500 mb-1 flex items-center justify-between">
+            <span>Out of Service Lifts, Stairs & Facilities</span>
+            <span class="text-[10px] text-amber-600 font-bold">Detours Active</span>
+          </div>
+
+          <div class="flex-1 overflow-x-auto overflow-y-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="bg-slate-100 text-slate-800 font-semibold uppercase text-[10px] sticky top-0">
+                <tr>
+                  <th class="py-2 px-2.5">Facility / Lift</th>
+                  <th class="py-2 px-2">Status</th>
+                  <th class="py-2 px-2">Reason</th>
+                  <th class="py-2 px-2 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="tableClosuresBody" class="divide-y divide-slate-100 text-[11px]">
+                <tr id="emptyClosureRow">
+                  <td colspan="4" class="py-10 text-center text-slate-400">
+                    <i class="fa-solid fa-circle-check text-emerald-500 text-lg mb-1 block"></i>
+                    All lifts & facilities operational
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="pt-2.5 mt-2 border-t border-slate-200 text-[10px] text-slate-500 flex items-center justify-between">
+          <span>Real-time WebSocket Dispatch</span>
+          <span class="text-emerald-600 font-bold flex items-center gap-1">
+            <i class="fa-solid fa-circle text-[6px]"></i> Live Sync Active
+          </span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. NAVIGATION SCREEN (SPLIT VIEW - FR-06, FR-12) -->
+    <section id="screenNavigation" class="hidden flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
+      
+      <!-- Left: Interactive Station SVG Map -->
+      <div class="lg:col-span-7 bg-white rounded-2xl shadow border border-slate-200 p-4 flex flex-col">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-200 mb-2">
+          <div>
+            <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+              <i class="fa-solid fa-map text-railway-secondary"></i> Interactive Station Map
+            </h3>
+            <p class="text-xs text-slate-500">Pune Junction 2D Layout • Click any node to set your location</p>
+          </div>
+          <div class="flex items-center space-x-2 text-xs">
+            <span class="inline-flex items-center gap-1 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Gates</span>
+            <span class="inline-flex items-center gap-1 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Platforms</span>
+            <span class="inline-flex items-center gap-1 text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Lifts</span>
+          </div>
+        </div>
+
+        <!-- SVG Map Container -->
+        <div class="flex-1 bg-slate-900 rounded-xl overflow-hidden relative border border-slate-800 flex items-center justify-center p-2 cursor-grab active:cursor-grabbing select-none" id="mapContainer">
+          
+          <!-- Floating Zoom & Pan Controls -->
+          <div class="absolute top-3 right-3 flex flex-col items-center bg-slate-800/90 backdrop-blur rounded-xl border border-slate-700 shadow-xl p-1.5 space-y-1.5 z-20">
+            <button onclick="zoomMap(1.25)" title="Zoom In (+)" class="w-8 h-8 rounded-lg bg-slate-700/80 hover:bg-blue-600 text-white flex items-center justify-center transition text-sm">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <span id="zoomPercentLabel" class="text-[11px] font-mono font-bold text-slate-300 px-1">100%</span>
+            <button onclick="zoomMap(0.8)" title="Zoom Out (-)" class="w-8 h-8 rounded-lg bg-slate-700/80 hover:bg-blue-600 text-white flex items-center justify-center transition text-sm">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <div class="w-full h-px bg-slate-700 my-0.5"></div>
+            <button onclick="resetMapZoom()" title="Reset Zoom / Fit Map" class="w-8 h-8 rounded-lg bg-slate-700/80 hover:bg-amber-600 text-white flex items-center justify-center transition text-xs">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+
+          <svg id="stationSvg" viewBox="0 0 950 620" class="w-full h-full max-h-[560px]">
+            <!-- Transformable Map Viewport for Zoom and Pan -->
+            <g id="mapViewport">
+              <!-- Layers: Tracks, Edges, Route Polyline, Nodes, Pins -->
+              <g id="svgBackground"></g>
+              <g id="svgEdges"></g>
+              <g id="svgActiveRoute"></g>
+              <g id="svgNodes"></g>
+              <g id="svgMarkers"></g>
+            </g>
+          </svg>
+
+          <!-- Map Legend Overlay -->
+          <div class="absolute bottom-3 left-3 bg-slate-800/85 backdrop-blur text-white text-[10px] px-3 py-2 rounded-lg border border-slate-700 space-y-1 z-10 pointer-events-none">
+            <div class="flex items-center gap-2"><span class="w-3 h-1 bg-blue-400 inline-block"></span> Active Step-Free Path</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span> Current Position</div>
+            <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span> Boarding / Destination</div>
+            <div class="text-[9px] text-slate-400 pt-0.5">Tip: Use mouse wheel or pinch to zoom; drag to pan</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Turn-by-Turn Directions & Active Step Highlight (FR-12) -->
+      <div class="lg:col-span-5 bg-white rounded-2xl shadow border border-slate-200 p-5 flex flex-col">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Live Turn-by-Turn</span>
+            <h3 class="text-lg font-bold text-slate-800" id="navSummaryTitle">Boarding Navigation</h3>
+          </div>
+          <div class="text-right">
+            <span id="navTotalDistance" class="text-base font-extrabold text-slate-800">0 m</span>
+            <span id="navTotalTime" class="block text-xs text-slate-500">~0 mins</span>
+          </div>
+        </div>
+
+        <!-- Active Step Card -->
+        <div id="activeStepBox" class="my-4 p-4 rounded-xl bg-blue-50 border-2 border-blue-500 shadow-sm">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-2 text-blue-800 font-bold text-sm">
+              <span id="activeStepBadge" class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+              <span>Current Step</span>
+            </div>
+            <button onclick="speakCurrentStep()" title="Read Step Aloud (Speech)" class="text-blue-600 hover:text-blue-800 p-1">
+              <i class="fa-solid fa-volume-high"></i>
+            </button>
+          </div>
+          <p id="activeStepInstruction" class="text-slate-800 font-medium text-sm mt-2">Walk through Main Concourse towards Platform 1.</p>
+          <div class="mt-3 flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-blue-200/60">
+            <span id="activeStepDistance"><i class="fa-solid fa-person-walking"></i> 35m</span>
+            <span id="activeStepEta"><i class="fa-solid fa-stopwatch"></i> ~30 sec</span>
+          </div>
+        </div>
+
+        <!-- Advance Step Action Button (FR-12) -->
+        <div class="mb-4">
+          <button onclick="advanceNavigationStep()" id="advanceStepBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-circle-check"></i> <span>Mark Step as Completed</span>
+          </button>
+        </div>
+
+        <!-- All Steps Timeline List -->
+        <div class="flex-1 overflow-y-auto space-y-2 pr-1" id="stepsList">
+          <!-- Step rows injected dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. TRAIN STATUS PANEL -->
+    <section id="screenTrains" class="hidden flex-1 bg-white rounded-2xl shadow border border-slate-200 p-6 flex flex-col">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 mb-4">
+        <div>
+          <h2 class="text-xl font-bold text-slate-800">Train Schedule & Platform Board</h2>
+          <p class="text-xs text-slate-500">Live platform assignments and delay statuses across Pune Junction</p>
+        </div>
+        <div class="w-full sm:w-72">
+          <input type="text" id="trainSearchInput" oninput="filterTrainsTable()" placeholder="Search train no. or name..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+      </div>
+
+      <div class="flex-1 overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-100 text-slate-800 font-semibold uppercase text-xs">
+            <tr>
+              <th class="py-3 px-4">Train No.</th>
+              <th class="py-3 px-4">Train Name</th>
+              <th class="py-3 px-4">Route</th>
+              <th class="py-3 px-4">Scheduled</th>
+              <th class="py-3 px-4">Platform</th>
+              <th class="py-3 px-4">Status</th>
+              <th class="py-3 px-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="trainsTableBody" class="divide-y divide-slate-200">
+            <!-- Dynamic trains injected -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5. ADMIN CONSOLE (FR-11, Protected) -->
+    <section id="screenAdmin" class="hidden flex-1 bg-white rounded-2xl shadow border border-slate-200 p-6 flex flex-col">
+      <!-- Admin Login View -->
+      <div id="adminLoginForm" class="max-w-md mx-auto my-auto py-10 w-full">
+        <div class="text-center mb-6">
+          <div class="w-14 h-14 bg-blue-100 text-railway-primary rounded-full inline-flex items-center justify-center text-2xl mb-2">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <h2 class="text-xl font-bold text-slate-800">Station Master & Admin Console</h2>
+          <p class="text-xs text-slate-500 mt-1">Authenticate to broadcast platform changes and manage facility closures.</p>
+        </div>
+
+        <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Username</label>
+            <input type="text" id="adminUser" value="station_admin" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+            <input type="password" id="adminPass" value="admin123" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+          </div>
+          <button type="submit" class="w-full bg-railway-primary hover:bg-blue-800 text-white font-semibold py-2.5 rounded-lg shadow text-sm transition">
+            Sign In to Console
+          </button>
+        </form>
+      </div>
+
+      <!-- Admin Dashboard (Shown after login) -->
+      <div id="adminDashboard" class="hidden flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Publish Actions Panel -->
+        <div class="lg:col-span-6 space-y-6">
+          <!-- Platform Change Form -->
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-3">
+              <i class="fa-solid fa-signs-post text-railway-secondary"></i> Publish Platform Change (Triggers Live Replanning)
+            </h3>
+            <form onsubmit="handlePublishPlatformChange(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Train Number</label>
+                <input type="text" id="adminChangeTrain" placeholder="e.g. 12951, 12124" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">New Platform</label>
+                  <select id="adminNewPlatform" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                    <option value="Platform 1">Platform 1</option>
+                    <option value="Platform 2">Platform 2</option>
+                    <option value="Platform 3">Platform 3</option>
+                    <option value="Platform 4">Platform 4</option>
+                    <option value="Platform 5">Platform 5</option>
+                    <option value="Platform 6">Platform 6</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Delay (Minutes)</label>
+                  <input type="number" id="adminDelay" value="15" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Operational Reason</label>
+                <input type="text" id="adminReason" value="Late incoming rake / Track maintenance" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              </div>
+              <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2.5 rounded-lg text-sm shadow transition">
+                <i class="fa-solid fa-bullhorn"></i> Broadcast Platform Change
+              </button>
+            </form>
+          </div>
+
+          <!-- Closure Management Form -->
+          <div class="bg-slate-50 border border-slate-200 p-5 rounded-xl">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2 mb-3">
+              <i class="fa-solid fa-ban text-amber-600"></i> Mark Lift / Facility Closure
+            </h3>
+            <form onsubmit="handlePublishClosure(event)" class="space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Target Facility / Node</label>
+                <select id="adminClosureNode" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                  <option value="lift_l1_p1">Lift L1 (Platform 1 to Central FOB)</option>
+                  <option value="lift_l2_p2_3">Lift L2 (Platform 2/3 to Central FOB)</option>
+                  <option value="lift_l3_p4_5">Lift L3 (Platform 4/5 to Central FOB)</option>
+                  <option value="lift_l4_p6">Lift L4 (Platform 6 to Central FOB)</option>
+                  <option value="washroom_concourse">Main Concourse Restrooms</option>
+                  <option value="fob_central_p2_3">Central Footbridge P2/3 Span</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+                <select id="adminClosureStatus" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                  <option value="true">Closed (Out of Service)</option>
+                  <option value="false">Open (Operational)</option>
+                </select>
+              </div>
+              <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 rounded-lg text-sm transition">
+                Update Closure Status
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Recent Dispatch History -->
+        <div class="lg:col-span-6 bg-slate-50 border border-slate-200 p-5 rounded-xl flex flex-col">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-slate-800 text-sm">Broadcast Change History</h3>
+            <button onclick="loadAdminHistory()" class="text-xs text-blue-600 hover:underline">Refresh</button>
+          </div>
+          <div class="flex-1 overflow-y-auto space-y-2 pr-1" id="adminHistoryList">
+            <!-- Dynamic history -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-3 px-4 border-t border-slate-800 text-center">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>Smart Railway Station Navigation Agent • MIT-ADT University Pune • Final Year Major Project</span>
+      <span class="text-slate-500">FastAPI • NetworkX A* / Dijkstra • WebSockets • WCAG 2.1 AA</span>
+    </div>
+  </footer>
+
+  <!-- Single-Page Application Client Logic -->
+  <script>
+    // State Store
+    const state = {
+      sessionId: null,
+      currentStation: 'pune_junction',
+      currentTrain: null,
+      currentPlatform: null,
+      isAccessible: false,
+      currentLocation: 'gate_1_main',
+      graph: null,
+      activeRoute: null,
+      currentStepIndex: 0,
+      adminToken: null,
+      socket: null,
+      trains: []
+    };
+
+    // Initialize application
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadStationGraph();
+      await initSession();
+      await loadTrains();
+      await loadDisruptionsData();
+      initWebSocket();
+      initMapZoomAndPanEvents();
+    });
+
+    // --- Tab Switching ---
+    function switchTab(tabName) {
+      ['Welcome', 'Chat', 'Navigation', 'Trains', 'Admin'].forEach(s => {
+        document.getElementById(`screen${s}`).classList.add('hidden');
+        const nav = document.getElementById(`nav${s}`);
+        if (nav) nav.classList.remove('bg-blue-800');
+      });
+
+      const target = document.getElementById(`screen${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+      if (target) target.classList.remove('hidden');
+      const activeNav = document.getElementById(`nav${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+      if (activeNav) activeNav.classList.add('bg-blue-800');
+
+      if (tabName === 'navigation') {
+        renderMap();
+      }
+    }
+
+    // High Contrast Mode Toggle
+    function toggleHighContrast() {
+      document.body.classList.toggle('high-contrast');
+    }
+
+    // --- Session Setup ---
+    async function initSession() {
+      try {
+        const res = await fetch('/api/sessions', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            station_id: state.currentStation,
+            accessibility_prefs: state.isAccessible,
+            current_node_id: state.currentLocation
+          })
+        });
+        const data = await res.json();
+        state.sessionId = data.id;
+        console.log('Session initialized:', state.sessionId);
+      } catch (e) {
+        console.error('Failed to create session:', e);
+      }
+    }
+
+    async function handleSetupSubmit(e) {
+      e.preventDefault();
+      const train = document.getElementById('setupTrain').value.trim();
+      const startLoc = document.getElementById('setupStartingLocation').value;
+      const isAcc = document.getElementById('setupAccessible').checked;
+
+      state.currentTrain = train || null;
+      state.currentLocation = startLoc;
+      state.isAccessible = isAcc;
+
+      // Update badges
+      if (train) {
+        const tb = document.getElementById('sessionTrainBadge');
+        tb.textContent = `Train ${train}`;
+        tb.classList.remove('hidden');
+      }
+      if (isAcc) {
+        document.getElementById('sessionAccessibleBadge').classList.remove('hidden');
+      }
+
+      switchTab('chat');
+
+      // Send initial auto query if train was supplied
+      if (train) {
+        const accText = isAcc ? " I need step-free access." : "";
+        sendUserMessage(`I am starting from ${startLoc.replace('_', ' ')}. Where is my train ${train}?${accText}`);
+      }
+    }
+
+    // --- WebSocket Dispatch Connection ---
+    function initWebSocket() {
+      if (!state.sessionId) {
+        setTimeout(initWebSocket, 500);
+        return;
+      }
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws/sessions/${state.sessionId}`;
+      
+      try {
+        state.socket = new WebSocket(wsUrl);
+
+        state.socket.onopen = () => {
+          document.getElementById('wsStatusText').textContent = 'Live Dispatch Connected';
+        };
+
+        state.socket.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            handleIncomingLiveAlert(data);
+          } catch (e) {
+            console.error('WS Parse Error:', e);
+          }
+        };
+
+        state.socket.onclose = () => {
+          document.getElementById('wsStatusText').textContent = 'Reconnecting...';
+          setTimeout(initWebSocket, 2000); // Automatic reconnection
+        };
+      } catch (e) {
+        console.warn('WS Init failed:', e);
+      }
+    }
+
+    // --- Station Disruptions & Alert Tables (Platform Changes & Facility Closures) ---
+    function switchAlertSubTab(tabName) {
+      const platBtn = document.getElementById('tabPlatChangesBtn');
+      const closuresBtn = document.getElementById('tabClosuresBtn');
+      const platView = document.getElementById('subviewPlatformChanges');
+      const closuresView = document.getElementById('subviewClosures');
+
+      if (tabName === 'platform') {
+        platBtn.className = "flex-1 py-1.5 px-2 rounded-lg bg-white text-blue-700 shadow-sm transition flex items-center justify-center gap-1.5 font-bold";
+        closuresBtn.className = "flex-1 py-1.5 px-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 font-semibold";
+        platView.classList.remove('hidden');
+        closuresView.classList.add('hidden');
+      } else {
+        closuresBtn.className = "flex-1 py-1.5 px-2 rounded-lg bg-white text-blue-700 shadow-sm transition flex items-center justify-center gap-1.5 font-bold";
+        platBtn.className = "flex-1 py-1.5 px-2 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 font-semibold";
+        closuresView.classList.remove('hidden');
+        platView.classList.add('hidden');
+      }
+    }
+
+    async function loadDisruptionsData() {
+      try {
+        const res = await fetch('/api/disruptions');
+        const data = await res.json();
+        renderPlatformChangesTable(data.platform_changes || []);
+        renderClosuresTable(data.closures || []);
+      } catch (e) {
+        console.error('Failed to load disruptions:', e);
+      }
+    }
+
+    function renderPlatformChangesTable(changes) {
+      const tbody = document.getElementById('tablePlatformChangesBody');
+      const countBadge = document.getElementById('badgePlatCount');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (!changes || changes.length === 0) {
+        tbody.innerHTML = `
+          <tr id="emptyPlatformRow">
+            <td colspan="5" class="py-10 text-center text-slate-400">
+              <i class="fa-solid fa-circle-check text-emerald-500 text-lg mb-1 block"></i>
+              All trains on scheduled platforms
+            </td>
+          </tr>
+        `;
+        if (countBadge) countBadge.textContent = '0';
+        return;
+      }
+
+      if (countBadge) {
+        countBadge.textContent = String(changes.length);
+        countBadge.className = "bg-rose-100 text-rose-800 text-[10px] px-1.5 py-0.2 rounded-full font-bold";
+      }
+
+      changes.forEach(ch => {
+        const platName = (ch.current_platform || ch.platform_node_id || '')
+          .replace('platform_', 'Platform ')
+          .replace('_mid', '')
+          .replace('_north', '')
+          .replace('_south', '');
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-blue-50/50 transition';
+        tr.innerHTML = `
+          <td class="py-2.5 px-2.5 font-semibold text-slate-800">
+            <div>${escapeHtml(ch.train_no)}</div>
+            <div class="text-[9px] text-slate-400 truncate max-w-[85px]">${escapeHtml(ch.train_name || '')}</div>
+          </td>
+          <td class="py-2.5 px-2">
+            <span class="bg-blue-600 text-white font-bold text-[10px] px-1.5 py-0.5 rounded shadow-sm">${escapeHtml(platName)}</span>
+          </td>
+          <td class="py-2.5 px-2">
+            <span class="text-rose-600 font-bold">${ch.delay_minutes > 0 ? '+' + ch.delay_minutes + 'm' : 'On Time'}</span>
+          </td>
+          <td class="py-2.5 px-2 text-[10px] text-slate-500 max-w-[90px] truncate" title="${escapeHtml(ch.reason || 'Operational adjustment')}">
+            ${escapeHtml(ch.reason || 'Operational shift')}
+          </td>
+          <td class="py-2.5 px-2 text-center">
+            <button onclick="selectTrainAndGuide('${escapeHtml(ch.train_no)}')" class="bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-700 text-[10px] font-semibold py-1 px-1.5 rounded transition">
+              Route
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderClosuresTable(closures) {
+      const tbody = document.getElementById('tableClosuresBody');
+      const countBadge = document.getElementById('badgeClosureCount');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const activeClosures = (closures || []).filter(c => c.is_closed);
+
+      if (!closures || closures.length === 0) {
+        tbody.innerHTML = `
+          <tr id="emptyClosureRow">
+            <td colspan="4" class="py-10 text-center text-slate-400">
+              <i class="fa-solid fa-circle-check text-emerald-500 text-lg mb-1 block"></i>
+              All station lifts & facilities open
+            </td>
+          </tr>
+        `;
+        if (countBadge) countBadge.textContent = '0';
+        return;
+      }
+
+      if (countBadge) {
+        countBadge.textContent = String(activeClosures.length);
+        countBadge.className = activeClosures.length > 0
+          ? "bg-amber-100 text-amber-800 text-[10px] px-1.5 py-0.2 rounded-full font-bold"
+          : "bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.2 rounded-full";
+      }
+
+      closures.forEach(c => {
+        const nodeLabel = (c.node_label || c.node_id || '').replace('_', ' ').replace('_', ' ');
+        const isClosed = Boolean(c.is_closed);
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-amber-50/50 transition';
+        tr.innerHTML = `
+          <td class="py-2.5 px-2.5 font-semibold text-slate-800 text-[10px]">
+            ${escapeHtml(nodeLabel)}
+          </td>
+          <td class="py-2.5 px-2">
+            <span class="px-1.5 py-0.5 rounded font-bold text-[9px] ${isClosed ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">
+              ${isClosed ? 'CLOSED' : 'OPEN'}
+            </span>
+          </td>
+          <td class="py-2.5 px-2 text-[10px] text-slate-500 max-w-[85px] truncate" title="${escapeHtml(c.reason || 'Maintenance')}">
+            ${escapeHtml(c.reason || 'Routine inspection')}
+          </td>
+          <td class="py-2.5 px-2 text-center">
+            <button onclick="handleMapNodeClick('${escapeHtml(c.node_id)}'); switchTab('navigation');" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-medium py-1 px-1.5 rounded transition">
+              Locate
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function handleIncomingLiveAlert(alertData) {
+      if (alertData.event_type === 'platform_change' || alertData.event_type === 'closure_alert') {
+        // 1. Show non-intrusive top banner
+        const banner = document.getElementById('alertBanner');
+        document.getElementById('alertTitle').textContent = alertData.title;
+        document.getElementById('alertMessage').textContent = alertData.message;
+        banner.classList.remove('hidden');
+
+        // 2. Audio announcement if speech synthesis supported
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(alertData.message);
+          window.speechSynthesis.speak(utterance);
+        }
+
+        // 3. Recalculate route in background if server provided new path
+        if (alertData.data && alertData.data.new_route) {
+          state.activeRoute = alertData.data.new_route;
+          state.currentStepIndex = 0;
+          renderRouteTimeline();
+          renderMap();
+        }
+
+        // 4. Update the Alert Tables in the Agent Chat section in real time!
+        loadDisruptionsData();
+        if (alertData.event_type === 'platform_change') {
+          switchAlertSubTab('platform');
+        } else if (alertData.event_type === 'closure_alert') {
+          switchAlertSubTab('closures');
+        }
+      }
+    }
+
+    function dismissAlert() {
+      document.getElementById('alertBanner').classList.add('hidden');
+    }
+
+    // --- Chat Logic ---
+    async function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      sendUserMessage(text);
+    }
+
+    function sendQuickQuery(text) {
+      sendUserMessage(text);
+    }
+
+    async function sendUserMessage(text) {
+      appendUserMessage(text);
+
+      // Loading bubble
+      const loadingId = appendLoadingIndicator();
+
+      try {
+        const res = await fetch(`/api/sessions/${state.sessionId}/messages`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        removeLoadingIndicator(loadingId);
+
+        appendAgentMessage(data.text, data.quick_actions || []);
+
+        if (data.route) {
+          state.activeRoute = data.route;
+          state.currentStepIndex = 0;
+          renderRouteTimeline();
+          renderMap();
+        }
+
+        if (data.train_info) {
+          state.currentTrain = data.train_info.train_no;
+          state.currentPlatform = data.train_info.platform;
+          const tb = document.getElementById('sessionTrainBadge');
+          tb.textContent = `Train ${data.train_info.train_no} (${data.train_info.platform})`;
+          tb.classList.remove('hidden');
+        }
+      } catch (err) {
+        removeLoadingIndicator(loadingId);
+        appendAgentMessage("I experienced a temporary communication glitch with the station server. Please check the physical platform indicator display or ask at the May I Help You desk.", []);
+      }
+    }
+
+    function appendUserMessage(text) {
+      const container = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'flex items-start justify-end space-x-2';
+      div.innerHTML = `
+        <div class="bg-railway-primary text-white rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-lg shadow-sm text-sm">
+          <p>${escapeHtml(text)}</p>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
+          <i class="fa-solid fa-user"></i>
+        </div>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function appendAgentMessage(text, quickActions) {
+      const container = document.getElementById('chatMessages');
+      const div = document.createElement('div');
+      div.className = 'flex items-start space-x-3';
+
+      let actionsHtml = '';
+      if (quickActions && quickActions.length > 0) {
+        actionsHtml = '<div class="mt-3 flex flex-wrap gap-2">';
+        quickActions.forEach(qa => {
+          actionsHtml += `
+            <button onclick="handleQuickAction('${escapeHtml(qa.action)}', '${escapeHtml(JSON.stringify(qa.payload || {}))}')" 
+                    class="text-xs bg-white hover:bg-blue-50 border border-slate-300 text-blue-700 font-semibold px-3 py-1.5 rounded-full transition shadow-sm">
+              ${escapeHtml(qa.label)}
+            </button>
+          `;
+        });
+        actionsHtml += '</div>';
+      }
+
+      // Convert simple markdown bold and newlines
+      const formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+
+      div.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-railway-primary text-white flex items-center justify-center text-sm font-bold shadow flex-shrink-0">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 text-slate-800 max-w-xl shadow-sm text-sm">
+          <div>${formatted}</div>
+          ${actionsHtml}
+        </div>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function appendLoadingIndicator() {
+      const container = document.getElementById('chatMessages');
+      const id = 'loading_' + Date.now();
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'flex items-start space-x-3';
+      div.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-railway-primary text-white flex items-center justify-center text-sm font-bold shadow flex-shrink-0">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 text-slate-600 text-sm flex items-center space-x-2">
+          <span class="inline-block w-2 h-2 bg-blue-600 rounded-full animate-bounce"></span>
+          <span class="inline-block w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+          <span class="inline-block w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+          <span class="text-xs font-medium ml-1">Analyzing station layout...</span>
+        </div>
+      `;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+      return id;
+    }
+
+    function removeLoadingIndicator(id) {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    }
+
+    function handleQuickAction(action, payloadJson) {
+      let payload = {};
+      try { payload = JSON.parse(payloadJson); } catch (e) {}
+
+      if (action === 'start_navigation' || action === 'show_map') {
+        switchTab('navigation');
+      } else if (action === 'find_washroom') {
+        sendUserMessage('Where is the nearest washroom?');
+      } else if (action === 'find_water') {
+        sendUserMessage('Where can I get drinking water?');
+      } else if (action === 'send_train' && payload.train_no) {
+        sendUserMessage(`Where is train ${payload.train_no}?`);
+      } else if (action === 'set_accessible') {
+        state.isAccessible = true;
+        document.getElementById('sessionAccessibleBadge').classList.remove('hidden');
+        sendUserMessage('I require step-free accessible routes avoiding stairs.');
+      } else {
+        sendUserMessage(`Please guide me for ${action.replace('_', ' ')}`);
+      }
+    }
+
+    // Voice input via Web Speech API (Stretch goal FR-15)
+    function startVoiceInput() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Voice input is not supported by your current browser. You can type your request in the chat box.');
+        return;
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = false;
+
+      const mic = document.getElementById('micBtn');
+      mic.classList.add('text-rose-500', 'animate-pulse');
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('chatInput').value = transcript;
+        mic.classList.remove('text-rose-500', 'animate-pulse');
+        sendUserMessage(transcript);
+      };
+
+      recognition.onerror = () => {
+        mic.classList.remove('text-rose-500', 'animate-pulse');
+      };
+      recognition.onend = () => {
+        mic.classList.remove('text-rose-500', 'animate-pulse');
+      };
+
+      recognition.start();
+    }
+
+    // --- Map Zoom & Pan State & Controls ---
+    const mapTransform = {
+      scale: 1.0,
+      translateX: 0,
+      translateY: 0,
+      isDragging: false,
+      startX: 0,
+      startY: 0,
+      minScale: 0.6,
+      maxScale: 3.5
+    };
+
+    function applyMapTransform() {
+      const viewport = document.getElementById('mapViewport');
+      const label = document.getElementById('zoomPercentLabel');
+      if (viewport) {
+        viewport.setAttribute('transform', `translate(${mapTransform.translateX}, ${mapTransform.translateY}) scale(${mapTransform.scale})`);
+      }
+      if (label) {
+        label.textContent = `${Math.round(mapTransform.scale * 100)}%`;
+      }
+    }
+
+    function zoomMap(factor) {
+      const newScale = Math.min(mapTransform.maxScale, Math.max(mapTransform.minScale, mapTransform.scale * factor));
+      const cx = 475;
+      const cy = 310;
+      mapTransform.translateX = cx - (cx - mapTransform.translateX) * (newScale / mapTransform.scale);
+      mapTransform.translateY = cy - (cy - mapTransform.translateY) * (newScale / mapTransform.scale);
+      mapTransform.scale = newScale;
+      applyMapTransform();
+    }
+
+    function resetMapZoom() {
+      mapTransform.scale = 1.0;
+      mapTransform.translateX = 0;
+      mapTransform.translateY = 0;
+      applyMapTransform();
+    }
+
+    function initMapZoomAndPanEvents() {
+      const svg = document.getElementById('stationSvg');
+      const container = document.getElementById('mapContainer');
+      if (!svg || !container) return;
+
+      // Mouse wheel zoom
+      svg.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = svg.getBoundingClientRect();
+        const factor = e.deltaY < 0 ? 1.15 : 0.87;
+        const newScale = Math.min(mapTransform.maxScale, Math.max(mapTransform.minScale, mapTransform.scale * factor));
+        
+        const mouseX = ((e.clientX - rect.left) / rect.width) * 950;
+        const mouseY = ((e.clientY - rect.top) / rect.height) * 620;
+
+        mapTransform.translateX = mouseX - (mouseX - mapTransform.translateX) * (newScale / mapTransform.scale);
+        mapTransform.translateY = mouseY - (mouseY - mapTransform.translateY) * (newScale / mapTransform.scale);
+        mapTransform.scale = newScale;
+        applyMapTransform();
+      }, { passive: false });
+
+      // Mouse drag to pan
+      svg.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        mapTransform.isDragging = true;
+        mapTransform.startX = e.clientX - mapTransform.translateX;
+        mapTransform.startY = e.clientY - mapTransform.translateY;
+        container.classList.remove('cursor-grab');
+        container.classList.add('cursor-grabbing');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!mapTransform.isDragging) return;
+        mapTransform.translateX = e.clientX - mapTransform.startX;
+        mapTransform.translateY = e.clientY - mapTransform.startY;
+        applyMapTransform();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (mapTransform.isDragging) {
+          mapTransform.isDragging = false;
+          container.classList.remove('cursor-grabbing');
+          container.classList.add('cursor-grab');
+        }
+      });
+
+      // Touch drag & pinch support
+      let touchStartDist = 0;
+      svg.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          mapTransform.isDragging = true;
+          mapTransform.startX = e.touches[0].clientX - mapTransform.translateX;
+          mapTransform.startY = e.touches[0].clientY - mapTransform.translateY;
+        } else if (e.touches.length === 2) {
+          mapTransform.isDragging = false;
+          touchStartDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+        }
+      }, { passive: true });
+
+      svg.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && mapTransform.isDragging) {
+          mapTransform.translateX = e.touches[0].clientX - mapTransform.startX;
+          mapTransform.translateY = e.touches[0].clientY - mapTransform.startY;
+          applyMapTransform();
+        } else if (e.touches.length === 2 && touchStartDist > 0) {
+          const curDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const factor = curDist / touchStartDist;
+          if (Math.abs(factor - 1) > 0.05) {
+            zoomMap(factor > 1 ? 1.05 : 0.95);
+            touchStartDist = curDist;
+          }
+        }
+      }, { passive: true });
+
+      svg.addEventListener('touchend', () => {
+        mapTransform.isDragging = false;
+        touchStartDist = 0;
+      });
+    }
+
+    // --- Graph & SVG Map Rendering (FR-06) ---
+    async function loadStationGraph() {
+      try {
+        const res = await fetch('/api/stations/pune_junction/graph');
+        state.graph = await res.json();
+        renderMap();
+      } catch (e) {
+        console.error('Failed to load graph:', e);
+      }
+    }
+
+    function renderMap() {
+      if (!state.graph) return;
+
+      const svgBackground = document.getElementById('svgBackground');
+      const svgEdges = document.getElementById('svgEdges');
+      const svgActiveRoute = document.getElementById('svgActiveRoute');
+      const svgNodes = document.getElementById('svgNodes');
+      const svgMarkers = document.getElementById('svgMarkers');
+
+      svgBackground.innerHTML = '';
+      svgEdges.innerHTML = '';
+      svgActiveRoute.innerHTML = '';
+      svgNodes.innerHTML = '';
+      svgMarkers.innerHTML = '';
+
+      // 1. Draw Railway Track Corridors
+      const tracks = [
+        { y: 240, label: 'Track 1-2' },
+        { y: 360, label: 'Track 3-4' },
+        { y: 480, label: 'Track 5-6' }
+      ];
+      tracks.forEach(tr => {
+        svgBackground.innerHTML += `
+          <rect x="50" y="${tr.y - 12}" width="850" height="24" fill="#1e293b" rx="4"/>
+          <line x1="50" y1="${tr.y - 6}" x2="900" y2="${tr.y - 6}" stroke="#64748b" stroke-width="2" stroke-dasharray="8 6"/>
+          <line x1="50" y1="${tr.y + 6}" x2="900" y2="${tr.y + 6}" stroke="#64748b" stroke-width="2" stroke-dasharray="8 6"/>
+          <text x="60" y="${tr.y + 3}" fill="#94a3b8" font-size="9" font-family="sans-serif">${tr.label}</text>
+        `;
+      });
+
+      // 2. Draw Platform Platforms Background
+      const platforms = [
+        { y: 200, label: 'PLATFORM 1' },
+        { y: 280, label: 'PLATFORM 2' },
+        { y: 320, label: 'PLATFORM 3' },
+        { y: 400, label: 'PLATFORM 4' },
+        { y: 440, label: 'PLATFORM 5' },
+        { y: 520, label: 'PLATFORM 6' }
+      ];
+      platforms.forEach(p => {
+        svgBackground.innerHTML += `
+          <rect x="80" y="${p.y - 14}" width="780" height="28" fill="#1e3a5f" opacity="0.6" rx="4"/>
+          <text x="880" y="${p.y + 4}" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="end">${p.label}</text>
+        `;
+      });
+
+      // Node coordinate lookup map
+      const nodeMap = {};
+      state.graph.nodes.forEach(n => nodeMap[n.id] = n);
+
+      // 3. Draw All Edges
+      state.graph.edges.forEach(e => {
+        const u = nodeMap[e.from_node];
+        const v = nodeMap[e.to_node];
+        if (!u || !v) return;
+
+        let strokeColor = '#334155';
+        let strokeDash = 'none';
+        if (e.has_lift) strokeColor = '#f59e0b';
+        else if (e.has_stairs) strokeDash = '4 4';
+
+        svgEdges.innerHTML += `
+          <line x1="${u.x}" y1="${u.y}" x2="${v.x}" y2="${v.y}" stroke="${strokeColor}" stroke-width="2.5" stroke-dasharray="${strokeDash}" opacity="0.7"/>
+        `;
+      });
+
+      // 4. Draw Active Route Polyline if present
+      if (state.activeRoute && state.activeRoute.nodes && state.activeRoute.nodes.length > 1) {
+        const points = state.activeRoute.nodes
+          .map(nid => nodeMap[nid])
+          .filter(n => n)
+          .map(n => `${n.x},${n.y}`)
+          .join(' ');
+
+        svgActiveRoute.innerHTML = `
+          <polyline points="${points}" fill="none" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+          <polyline points="${points}" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="6 6"/>
+        `;
+      }
+
+      // 5. Draw Nodes
+      state.graph.nodes.forEach(n => {
+        if (n.is_restricted) return;
+
+        let fillColor = '#94a3b8';
+        let radius = 5;
+
+        if (n.type === 'gate') { fillColor = '#10b981'; radius = 7; }
+        else if (n.type === 'platform') { fillColor = '#3b82f6'; radius = 6; }
+        else if (n.type === 'lift') { fillColor = '#f59e0b'; radius = 6; }
+        else if (n.type === 'stairs') { fillColor = '#ef4444'; radius = 5; }
+        else if (n.type === 'washroom') { fillColor = '#06b6d4'; radius = 6; }
+        else if (n.type === 'food') { fillColor = '#8b5cf6'; radius = 6; }
+        else if (n.type === 'waiting') { fillColor = '#ec4899'; radius = 6; }
+
+        svgNodes.innerHTML += `
+          <circle cx="${n.x}" cy="${n.y}" r="${radius}" fill="${fillColor}" stroke="#ffffff" stroke-width="1.5" class="cursor-pointer hover:opacity-80" onclick="handleMapNodeClick('${n.id}')">
+            <title>${n.label}</title>
+          </circle>
+          <text x="${n.x}" y="${n.y - 9}" fill="#e2e8f0" font-size="9" text-anchor="middle" pointer-events="none" font-weight="500">${n.label.split('(')[0]}</text>
+        `;
+      });
+
+      // 6. Draw Current Location Pin (Pulsating)
+      const curr = nodeMap[state.currentLocation];
+      if (curr) {
+        svgMarkers.innerHTML += `
+          <circle cx="${curr.x}" cy="${curr.y}" r="14" fill="#f43f5e" class="pulse-pin" opacity="0.5"/>
+          <circle cx="${curr.x}" cy="${curr.y}" r="6" fill="#f43f5e" stroke="#ffffff" stroke-width="2"/>
+        `;
+      }
+
+      // 7. Draw Destination Pin
+      if (state.activeRoute && state.activeRoute.to_node) {
+        const dest = nodeMap[state.activeRoute.to_node];
+        if (dest) {
+          svgMarkers.innerHTML += `
+            <circle cx="${dest.x}" cy="${dest.y}" r="9" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
+            <text x="${dest.x}" y="${dest.y + 4}" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle">★</text>
+          `;
+        }
+      }
+
+      applyMapTransform();
+    }
+
+    function handleMapNodeClick(nodeId) {
+      state.currentLocation = nodeId;
+      renderMap();
+      sendUserMessage(`I am now standing at node: ${nodeId.replace('_', ' ')}. Please recalculate directions if needed.`);
+    }
+
+    // --- Turn-by-Turn Navigation Timeline (FR-06, FR-12) ---
+    function renderRouteTimeline() {
+      if (!state.activeRoute || !state.activeRoute.steps) return;
+
+      const steps = state.activeRoute.steps;
+      const currIdx = state.currentStepIndex;
+
+      document.getElementById('navTotalDistance').textContent = `${state.activeRoute.total_distance_m} m`;
+      document.getElementById('navTotalTime').textContent = `~${Math.ceil(state.activeRoute.total_estimated_seconds / 60)} mins`;
+
+      if (currIdx < steps.length) {
+        const curStep = steps[currIdx];
+        document.getElementById('activeStepBadge').textContent = `${curStep.step_number}`;
+        document.getElementById('activeStepInstruction').textContent = curStep.instruction;
+        document.getElementById('activeStepDistance').innerHTML = `<i class="fa-solid fa-person-walking"></i> ${curStep.distance_m}m`;
+        document.getElementById('activeStepEta').innerHTML = `<i class="fa-solid fa-stopwatch"></i> ~${curStep.estimated_seconds} sec`;
+      } else {
+        document.getElementById('activeStepBadge').textContent = '✓';
+        document.getElementById('activeStepInstruction').textContent = "You have arrived at your boarding destination!";
+        document.getElementById('advanceStepBtn').disabled = true;
+        document.getElementById('advanceStepBtn').textContent = "Journey Completed";
+      }
+
+      const listContainer = document.getElementById('stepsList');
+      listContainer.innerHTML = '';
+
+      steps.forEach((st, idx) => {
+        let statusClass = 'border-slate-200 bg-white text-slate-700';
+        let badgeClass = 'bg-slate-200 text-slate-700';
+        if (idx === currIdx) {
+          statusClass = 'border-blue-500 bg-blue-50/80 text-blue-900 font-semibold';
+          badgeClass = 'bg-blue-600 text-white';
+        } else if (idx < currIdx) {
+          statusClass = 'border-emerald-200 bg-emerald-50/50 text-slate-400 line-through';
+          badgeClass = 'bg-emerald-500 text-white';
+        }
+
+        const div = document.createElement('div');
+        div.className = `p-3 rounded-lg border text-xs flex items-start space-x-3 transition ${statusClass}`;
+        div.innerHTML = `
+          <span class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] flex-shrink-0 ${badgeClass}">
+            ${idx < currIdx ? '✓' : st.step_number}
+          </span>
+          <div class="flex-1">
+            <p>${st.instruction}</p>
+            <span class="text-[10px] text-slate-500">${st.distance_m}m • ~${st.estimated_seconds}s</span>
+          </div>
+        `;
+        listContainer.appendChild(div);
+      });
+    }
+
+    async function advanceNavigationStep() {
+      if (!state.activeRoute) return;
+      try {
+        const res = await fetch(`/api/sessions/${state.sessionId}/step`, { method: 'POST' });
+        const data = await res.json();
+        state.currentStepIndex = data.current_step_index;
+        state.currentLocation = data.current_node_id;
+        renderRouteTimeline();
+        renderMap();
+
+        if (data.completed) {
+          appendAgentMessage("🎉 You have arrived at your platform / coach boarding area. Have a safe journey!", []);
+        } else {
+          speakCurrentStep();
+        }
+      } catch (e) {
+        console.error('Failed to advance step:', e);
+      }
+    }
+
+    function speakCurrentStep() {
+      if ('speechSynthesis' in window && state.activeRoute) {
+        const step = state.activeRoute.steps[state.currentStepIndex];
+        if (step) {
+          const u = new SpeechSynthesisUtterance(step.instruction);
+          window.speechSynthesis.speak(u);
+        }
+      }
+    }
+
+    // --- Train Board Logic ---
+    async function loadTrains() {
+      try {
+        const res = await fetch('/api/trains');
+        state.trains = await res.json();
+        renderTrainsTable(state.trains);
+      } catch (e) {
+        console.error('Failed to load trains:', e);
+      }
+    }
+
+    function renderTrainsTable(trainsList) {
+      const tbody = document.getElementById('trainsTableBody');
+      tbody.innerHTML = '';
+
+      trainsList.forEach(t => {
+        let statusBadge = '<span class="px-2 py-0.5 rounded text-xs bg-emerald-100 text-emerald-800 font-semibold">On Time</span>';
+        if (t.status === 'Platform Changed') {
+          statusBadge = `<span class="px-2 py-0.5 rounded text-xs bg-rose-100 text-rose-800 font-semibold animate-pulse">Platform Changed (+${t.delay_minutes}m)</span>`;
+        } else if (t.delay_minutes > 0) {
+          statusBadge = `<span class="px-2 py-0.5 rounded text-xs bg-amber-100 text-amber-800 font-semibold">Delayed ${t.delay_minutes}m</span>`;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-mono font-bold text-slate-800">${t.train_no}</td>
+          <td class="py-3 px-4 font-semibold text-slate-800">${t.name}</td>
+          <td class="py-3 px-4 text-xs">${t.origin} ➔ ${t.destination}</td>
+          <td class="py-3 px-4 font-mono font-bold">${t.scheduled_departure}</td>
+          <td class="py-3 px-4 font-bold text-blue-700">${t.current_platform || t.default_platform}</td>
+          <td class="py-3 px-4">${statusBadge}</td>
+          <td class="py-3 px-4 text-center">
+            <button onclick="selectTrainAndGuide('${t.train_no}')" class="px-3 py-1 bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white rounded-lg text-xs font-semibold transition">
+              Guide Me
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterTrainsTable() {
+      const q = document.getElementById('trainSearchInput').value.toLowerCase();
+      const filtered = state.trains.filter(t => 
+        t.train_no.toLowerCase().includes(q) || 
+        t.name.toLowerCase().includes(q) ||
+        t.destination.toLowerCase().includes(q)
+      );
+      renderTrainsTable(filtered);
+    }
+
+    function selectTrainAndGuide(trainNo) {
+      state.currentTrain = trainNo;
+      switchTab('chat');
+      sendUserMessage(`Where is train ${trainNo}?`);
+    }
+
+    // --- Admin Operations (FR-11) ---
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('adminUser').value;
+      const p = document.getElementById('adminPass').value;
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+        if (data.access_token) {
+          state.adminToken = data.access_token;
+          document.getElementById('adminLoginForm').classList.add('hidden');
+          document.getElementById('adminDashboard').classList.remove('hidden');
+          loadAdminHistory();
+        } else {
+          alert('Invalid admin credentials.');
+        }
+      } catch (err) {
+        alert('Admin login failed.');
+      }
+    }
+
+    async function handlePublishPlatformChange(e) {
+      e.preventDefault();
+      const tno = document.getElementById('adminChangeTrain').value.trim();
+      const nplat = document.getElementById('adminNewPlatform').value;
+      const del = parseInt(document.getElementById('adminDelay').value) || 0;
+      const reason = document.getElementById('adminReason').value;
+
+      try {
+        const res = await fetch('/api/admin/platform-changes', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${state.adminToken}`
+          },
+          body: JSON.stringify({
+            train_no: tno,
+            new_platform: nplat,
+            delay_minutes: del,
+            reason: reason
+          })
+        });
+        const data = await res.json();
+        alert(`Platform update broadcasted: ${data.message} (${data.affected_sessions} active sessions replanned)`);
+        loadAdminHistory();
+        loadTrains();
+      } catch (err) {
+        alert('Failed to publish change.');
+      }
+    }
+
+    async function handlePublishClosure(e) {
+      e.preventDefault();
+      const nid = document.getElementById('adminClosureNode').value;
+      const isClosed = document.getElementById('adminClosureStatus').value === 'true';
+
+      try {
+        const res = await fetch('/api/admin/closures', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${state.adminToken}`
+          },
+          body: JSON.stringify({
+            node_id: nid,
+            is_closed: isClosed,
+            reason: "Routine safety inspection"
+          })
+        });
+        const data = await res.json();
+        alert(`Closure status updated for ${nid}`);
+        loadAdminHistory();
+      } catch (err) {
+        alert('Failed to update closure.');
+      }
+    }
+
+    async function loadAdminHistory() {
+      try {
+        const res = await fetch('/api/admin/history');
+        const history = await res.json();
+        const container = document.getElementById('adminHistoryList');
+        container.innerHTML = '';
+        history.forEach(h => {
+          const div = document.createElement('div');
+          div.className = 'p-2.5 rounded bg-white border border-slate-200 text-xs flex justify-between';
+          div.innerHTML = `
+            <div>
+              <span class="font-bold text-slate-800">Train ${h.train_no}</span> ➔ 
+              <span class="text-blue-700 font-semibold">${h.platform_node_id.replace('_', ' ').toUpperCase()}</span>
+              <span class="block text-[10px] text-slate-500">${new Date(h.effective_from).toLocaleTimeString()} (${h.source})</span>
+            </div>
+            <span class="text-amber-600 font-semibold">+${h.delay_minutes}m delay</span>
+          `;
+          container.appendChild(div);
+        });
+      } catch (e) {
+        console.error('Failed to load history:', e);
+      }
+    }
+
+    function escapeHtml(string) {
+      if (!string) return '';
+      return String(string)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>

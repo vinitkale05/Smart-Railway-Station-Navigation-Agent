@@ -1,0 +1,189 @@
+{
+  "station": {
+    "id": "pune_junction",
+    "name": "Pune Junction",
+    "city": "Pune",
+    "timezone": "Asia/Kolkata"
+  },
+  "nodes": [
+    {"id": "gate_1_main", "station_id": "pune_junction", "type": "gate", "label": "Gate 1 (Main Entrance)", "x": 100, "y": 50, "is_restricted": false},
+    {"id": "gate_2_reservation", "station_id": "pune_junction", "type": "gate", "label": "Gate 2 (PRS Counter Entrance)", "x": 260, "y": 50, "is_restricted": false},
+    {"id": "gate_3_east", "station_id": "pune_junction", "type": "gate", "label": "Gate 3 (East Side / Sassoon Exit)", "x": 850, "y": 550, "is_restricted": false},
+    {"id": "gate_4_parking", "station_id": "pune_junction", "type": "gate", "label": "Gate 4 (Parking & Auto Stand)", "x": 50, "y": 180, "is_restricted": false},
+
+    {"id": "concourse_main", "station_id": "pune_junction", "type": "concourse", "label": "Main Concourse Hall", "x": 180, "y": 100, "is_restricted": false},
+    {"id": "concourse_west", "station_id": "pune_junction", "type": "concourse", "label": "Concourse West Passage", "x": 100, "y": 140, "is_restricted": false},
+    {"id": "concourse_east", "station_id": "pune_junction", "type": "concourse", "label": "Concourse East Passage", "x": 300, "y": 100, "is_restricted": false},
+
+    {"id": "ticket_counter_general", "station_id": "pune_junction", "type": "ticket_counter", "label": "General Booking Counters & ATVMs", "x": 140, "y": 70, "is_restricted": false},
+    {"id": "help_desk_main", "station_id": "pune_junction", "type": "help_desk", "label": "May I Help You & Sahayak Desk", "x": 220, "y": 110, "is_restricted": false},
+    {"id": "wheelchair_booth", "station_id": "pune_junction", "type": "help_desk", "label": "Divyangjan Wheelchair Assistance", "x": 160, "y": 120, "is_restricted": false},
+    {"id": "cloak_room", "station_id": "pune_junction", "type": "facility", "label": "Cloak Room & Luggage Scanner", "x": 60, "y": 110, "is_restricted": false},
+
+    {"id": "waiting_executive", "station_id": "pune_junction", "type": "waiting", "label": "IRCTC Executive Lounge", "x": 240, "y": 140, "is_restricted": false},
+    {"id": "waiting_ladies", "station_id": "pune_junction", "type": "waiting", "label": "Ladies Waiting Room", "x": 320, "y": 140, "is_restricted": false},
+    {"id": "waiting_general", "station_id": "pune_junction", "type": "waiting", "label": "General Passenger Waiting Hall", "x": 380, "y": 140, "is_restricted": false},
+
+    {"id": "washroom_concourse", "station_id": "pune_junction", "type": "washroom", "label": "Main Concourse Accessible Restrooms", "x": 280, "y": 70, "is_restricted": false},
+    {"id": "water_concourse", "station_id": "pune_junction", "type": "food", "label": "Water Vending Machine (WVM 1)", "x": 190, "y": 130, "is_restricted": false},
+    {"id": "food_jan_aahaar", "station_id": "pune_junction", "type": "food", "label": "IRCTC Jan Aahaar Cafeteria", "x": 120, "y": 160, "is_restricted": false},
+
+    {"id": "platform_1_north", "station_id": "pune_junction", "type": "platform", "label": "Platform 1 (Coach 1-8 North)", "x": 100, "y": 200, "is_restricted": false},
+    {"id": "platform_1_mid", "station_id": "pune_junction", "type": "platform", "label": "Platform 1 (Coach 9-16 Mid)", "x": 250, "y": 200, "is_restricted": false},
+    {"id": "platform_1_south", "station_id": "pune_junction", "type": "platform", "label": "Platform 1 (Coach 17-24 South)", "x": 400, "y": 200, "is_restricted": false},
+
+    {"id": "lift_l1_p1", "station_id": "pune_junction", "type": "lift", "label": "Lift L1 (Platform 1 to FOB Central)", "x": 230, "y": 180, "is_restricted": false},
+    {"id": "stairs_s1_p1", "station_id": "pune_junction", "type": "stairs", "label": "Stairs S1 (Platform 1 to FOB Central)", "x": 270, "y": 180, "is_restricted": false},
+    {"id": "stairs_s2_p1_north", "station_id": "pune_junction", "type": "stairs", "label": "Stairs S2 (Platform 1 to FOB North)", "x": 120, "y": 180, "is_restricted": false},
+
+    {"id": "fob_central_p1", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 1 (Central) - Over P1", "x": 250, "y": 220, "is_restricted": false},
+    {"id": "fob_central_span_1_2", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 1 (Central Span Track 1-2)", "x": 250, "y": 260, "is_restricted": false},
+    {"id": "fob_central_p2_3", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 1 (Central) - Over P2/P3", "x": 250, "y": 300, "is_restricted": false},
+    {"id": "fob_central_span_3_4", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 1 (Central Span Track 3-4)", "x": 250, "y": 360, "is_restricted": false},
+    {"id": "fob_central_p4_5", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 1 (Central) - Over P4/P5", "x": 250, "y": 420, "is_restricted": false},
+    {"id": "fob_central_span_5_6", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 1 (Central Span Track 5-6)", "x": 250, "y": 480, "is_restricted": false},
+    {"id": "fob_central_p6", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 1 (Central) - Over P6", "x": 250, "y": 520, "is_restricted": false},
+
+    {"id": "lift_l2_p2_3", "station_id": "pune_junction", "type": "lift", "label": "Lift L2 (FOB Central to Platform 2/3)", "x": 230, "y": 300, "is_restricted": false},
+    {"id": "stairs_s3_p2_3", "station_id": "pune_junction", "type": "stairs", "label": "Stairs S3 (FOB Central to Platform 2/3)", "x": 270, "y": 300, "is_restricted": false},
+
+    {"id": "platform_2_mid", "station_id": "pune_junction", "type": "platform", "label": "Platform 2 (Island Mid)", "x": 250, "y": 280, "is_restricted": false},
+    {"id": "platform_2_north", "station_id": "pune_junction", "type": "platform", "label": "Platform 2 (North)", "x": 100, "y": 280, "is_restricted": false},
+    {"id": "platform_2_south", "station_id": "pune_junction", "type": "platform", "label": "Platform 2 (South)", "x": 400, "y": 280, "is_restricted": false},
+
+    {"id": "platform_3_mid", "station_id": "pune_junction", "type": "platform", "label": "Platform 3 (Island Mid)", "x": 250, "y": 320, "is_restricted": false},
+    {"id": "platform_3_north", "station_id": "pune_junction", "type": "platform", "label": "Platform 3 (North)", "x": 100, "y": 320, "is_restricted": false},
+    {"id": "platform_3_south", "station_id": "pune_junction", "type": "platform", "label": "Platform 3 (South)", "x": 400, "y": 320, "is_restricted": false},
+
+    {"id": "water_p2_3", "station_id": "pune_junction", "type": "food", "label": "Water Booth Platform 2/3", "x": 200, "y": 300, "is_restricted": false},
+    {"id": "washroom_p2_3", "station_id": "pune_junction", "type": "washroom", "label": "Divyangjan Restroom Platform 2/3", "x": 320, "y": 300, "is_restricted": false},
+    {"id": "food_chai_p2_3", "station_id": "pune_junction", "type": "food", "label": "Chai & Snack Kiosk P2/3", "x": 180, "y": 300, "is_restricted": false},
+
+    {"id": "lift_l3_p4_5", "station_id": "pune_junction", "type": "lift", "label": "Lift L3 (FOB Central to Platform 4/5)", "x": 230, "y": 420, "is_restricted": false},
+    {"id": "stairs_s4_p4_5", "station_id": "pune_junction", "type": "stairs", "label": "Stairs S4 (FOB Central to Platform 4/5)", "x": 270, "y": 420, "is_restricted": false},
+
+    {"id": "platform_4_mid", "station_id": "pune_junction", "type": "platform", "label": "Platform 4 (Island Mid)", "x": 250, "y": 400, "is_restricted": false},
+    {"id": "platform_4_north", "station_id": "pune_junction", "type": "platform", "label": "Platform 4 (North)", "x": 100, "y": 400, "is_restricted": false},
+    {"id": "platform_4_south", "station_id": "pune_junction", "type": "platform", "label": "Platform 4 (South)", "x": 400, "y": 400, "is_restricted": false},
+
+    {"id": "platform_5_mid", "station_id": "pune_junction", "type": "platform", "label": "Platform 5 (Island Mid)", "x": 250, "y": 440, "is_restricted": false},
+    {"id": "platform_5_north", "station_id": "pune_junction", "type": "platform", "label": "Platform 5 (North)", "x": 100, "y": 440, "is_restricted": false},
+    {"id": "platform_5_south", "station_id": "pune_junction", "type": "platform", "label": "Platform 5 (South)", "x": 400, "y": 440, "is_restricted": false},
+
+    {"id": "water_p4_5", "station_id": "pune_junction", "type": "food", "label": "Water Vending Machine P4/5", "x": 210, "y": 420, "is_restricted": false},
+    {"id": "washroom_p4_5", "station_id": "pune_junction", "type": "washroom", "label": "Restrooms Platform 4/5", "x": 330, "y": 420, "is_restricted": false},
+    {"id": "food_bookstall_p4_5", "station_id": "pune_junction", "type": "food", "label": "Wheeler Book & Refreshment Stall P4/5", "x": 170, "y": 420, "is_restricted": false},
+
+    {"id": "lift_l4_p6", "station_id": "pune_junction", "type": "lift", "label": "Lift L4 (FOB Central to Platform 6)", "x": 230, "y": 520, "is_restricted": false},
+    {"id": "stairs_s5_p6", "station_id": "pune_junction", "type": "stairs", "label": "Stairs S5 (FOB Central to Platform 6)", "x": 270, "y": 520, "is_restricted": false},
+
+    {"id": "platform_6_mid", "station_id": "pune_junction", "type": "platform", "label": "Platform 6 (Mid)", "x": 250, "y": 520, "is_restricted": false},
+    {"id": "platform_6_north", "station_id": "pune_junction", "type": "platform", "label": "Platform 6 (North)", "x": 100, "y": 520, "is_restricted": false},
+    {"id": "platform_6_south", "station_id": "pune_junction", "type": "platform", "label": "Platform 6 (South)", "x": 400, "y": 520, "is_restricted": false},
+
+    {"id": "fob_north_p1", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 2 (North Overbridge P1)", "x": 100, "y": 210, "is_restricted": false},
+    {"id": "fob_north_p2_3", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 2 (North Overbridge P2/3)", "x": 100, "y": 300, "is_restricted": false},
+    {"id": "fob_north_p4_5", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 2 (North Overbridge P4/5)", "x": 100, "y": 420, "is_restricted": false},
+    {"id": "fob_north_p6", "station_id": "pune_junction", "type": "footbridge", "label": "Footbridge 2 (North Overbridge P6)", "x": 100, "y": 520, "is_restricted": false},
+
+    {"id": "ramp_concourse_to_p1", "station_id": "pune_junction", "type": "ramp", "label": "Step-free Gentle Ramp (Concourse to P1)", "x": 160, "y": 170, "is_restricted": false},
+
+    {"id": "track_1_2_restricted", "station_id": "pune_junction", "type": "track", "label": "Track Area 1-2 (No Walking)", "x": 250, "y": 240, "is_restricted": true},
+    {"id": "track_3_4_restricted", "station_id": "pune_junction", "type": "track", "label": "Track Area 3-4 (No Walking)", "x": 250, "y": 360, "is_restricted": true}
+  ],
+  "edges": [
+    {"id": "e_g1_concourse", "from_node": "gate_1_main", "to_node": "concourse_main", "distance_m": 45, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_g2_concourse", "from_node": "gate_2_reservation", "to_node": "concourse_east", "distance_m": 35, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_g4_concourse_w", "from_node": "gate_4_parking", "to_node": "concourse_west", "distance_m": 50, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_cm_cw", "from_node": "concourse_main", "to_node": "concourse_west", "distance_m": 30, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_cm_ce", "from_node": "concourse_main", "to_node": "concourse_east", "distance_m": 35, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_cm_tc", "from_node": "concourse_main", "to_node": "ticket_counter_general", "distance_m": 25, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_cm_hd", "from_node": "concourse_main", "to_node": "help_desk_main", "distance_m": 15, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_cm_wb", "from_node": "concourse_main", "to_node": "wheelchair_booth", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_cw_cr", "from_node": "concourse_west", "to_node": "cloak_room", "distance_m": 25, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_cw_food", "from_node": "concourse_west", "to_node": "food_jan_aahaar", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_ce_we", "from_node": "concourse_east", "to_node": "waiting_executive", "distance_m": 25, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_we_wl", "from_node": "waiting_executive", "to_node": "waiting_ladies", "distance_m": 30, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_wl_wg", "from_node": "waiting_ladies", "to_node": "waiting_general", "distance_m": 25, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_ce_wash", "from_node": "concourse_east", "to_node": "washroom_concourse", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_cm_water", "from_node": "concourse_main", "to_node": "water_concourse", "distance_m": 15, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_cm_ramp_p1", "from_node": "concourse_main", "to_node": "ramp_concourse_to_p1", "distance_m": 30, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_ramp_p1", "from_node": "ramp_concourse_to_p1", "to_node": "platform_1_mid", "distance_m": 35, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_cw_p1n", "from_node": "concourse_west", "to_node": "platform_1_north", "distance_m": 40, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_ce_p1s", "from_node": "concourse_east", "to_node": "platform_1_south", "distance_m": 50, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_p1_n_m", "from_node": "platform_1_north", "to_node": "platform_1_mid", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p1_m_s", "from_node": "platform_1_mid", "to_node": "platform_1_south", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_p1_lift_l1", "from_node": "platform_1_mid", "to_node": "lift_l1_p1", "distance_m": 15, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+    {"id": "e_l1_fob", "from_node": "lift_l1_p1", "to_node": "fob_central_p1", "distance_m": 10, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+    {"id": "e_p1_stairs_s1", "from_node": "platform_1_mid", "to_node": "stairs_s1_p1", "distance_m": 15, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_s1_fob", "from_node": "stairs_s1_p1", "to_node": "fob_central_p1", "distance_m": 12, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+
+    {"id": "e_fob_p1_span12", "from_node": "fob_central_p1", "to_node": "fob_central_span_1_2", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_fob_span12_p23", "from_node": "fob_central_span_1_2", "to_node": "fob_central_p2_3", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_fob_l2", "from_node": "fob_central_p2_3", "to_node": "lift_l2_p2_3", "distance_m": 8, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+    {"id": "e_l2_p2mid", "from_node": "lift_l2_p2_3", "to_node": "platform_2_mid", "distance_m": 10, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+    {"id": "e_l2_p3mid", "from_node": "lift_l2_p2_3", "to_node": "platform_3_mid", "distance_m": 10, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+
+    {"id": "e_fob_s3", "from_node": "fob_central_p2_3", "to_node": "stairs_s3_p2_3", "distance_m": 8, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_s3_p2mid", "from_node": "stairs_s3_p2_3", "to_node": "platform_2_mid", "distance_m": 12, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_s3_p3mid", "from_node": "stairs_s3_p2_3", "to_node": "platform_3_mid", "distance_m": 12, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+
+    {"id": "e_p2_n_m", "from_node": "platform_2_north", "to_node": "platform_2_mid", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p2_m_s", "from_node": "platform_2_mid", "to_node": "platform_2_south", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p3_n_m", "from_node": "platform_3_north", "to_node": "platform_3_mid", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p3_m_s", "from_node": "platform_3_mid", "to_node": "platform_3_south", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p2_p3_cross", "from_node": "platform_2_mid", "to_node": "platform_3_mid", "distance_m": 15, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_p23_water", "from_node": "platform_2_mid", "to_node": "water_p2_3", "distance_m": 18, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p23_wash", "from_node": "platform_3_mid", "to_node": "washroom_p2_3", "distance_m": 22, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p23_chai", "from_node": "platform_2_mid", "to_node": "food_chai_p2_3", "distance_m": 15, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_fob_p23_span34", "from_node": "fob_central_p2_3", "to_node": "fob_central_span_3_4", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_fob_span34_p45", "from_node": "fob_central_span_3_4", "to_node": "fob_central_p4_5", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_fob_l3", "from_node": "fob_central_p4_5", "to_node": "lift_l3_p4_5", "distance_m": 8, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+    {"id": "e_l3_p4mid", "from_node": "lift_l3_p4_5", "to_node": "platform_4_mid", "distance_m": 10, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+    {"id": "e_l3_p5mid", "from_node": "lift_l3_p4_5", "to_node": "platform_5_mid", "distance_m": 10, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+
+    {"id": "e_fob_s4", "from_node": "fob_central_p4_5", "to_node": "stairs_s4_p4_5", "distance_m": 8, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_s4_p4mid", "from_node": "stairs_s4_p4_5", "to_node": "platform_4_mid", "distance_m": 12, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_s4_p5mid", "from_node": "stairs_s4_p4_5", "to_node": "platform_5_mid", "distance_m": 12, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+
+    {"id": "e_p4_n_m", "from_node": "platform_4_north", "to_node": "platform_4_mid", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p4_m_s", "from_node": "platform_4_mid", "to_node": "platform_4_south", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p5_n_m", "from_node": "platform_5_north", "to_node": "platform_5_mid", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p5_m_s", "from_node": "platform_5_mid", "to_node": "platform_5_south", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p4_p5_cross", "from_node": "platform_4_mid", "to_node": "platform_5_mid", "distance_m": 15, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_p45_water", "from_node": "platform_4_mid", "to_node": "water_p4_5", "distance_m": 15, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p45_wash", "from_node": "platform_5_mid", "to_node": "washroom_p4_5", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p45_book", "from_node": "platform_4_mid", "to_node": "food_bookstall_p4_5", "distance_m": 15, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_fob_p45_span56", "from_node": "fob_central_p4_5", "to_node": "fob_central_span_5_6", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_fob_span56_p6", "from_node": "fob_central_span_5_6", "to_node": "fob_central_p6", "distance_m": 20, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_fob_l4", "from_node": "fob_central_p6", "to_node": "lift_l4_p6", "distance_m": 8, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+    {"id": "e_l4_p6mid", "from_node": "lift_l4_p6", "to_node": "platform_6_mid", "distance_m": 10, "has_stairs": false, "has_lift": true, "is_step_free": true, "is_active": true},
+    {"id": "e_fob_s5", "from_node": "fob_central_p6", "to_node": "stairs_s5_p6", "distance_m": 8, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_s5_p6mid", "from_node": "stairs_s5_p6", "to_node": "platform_6_mid", "distance_m": 12, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+
+    {"id": "e_p6_n_m", "from_node": "platform_6_north", "to_node": "platform_6_mid", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p6_m_s", "from_node": "platform_6_mid", "to_node": "platform_6_south", "distance_m": 110, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_p6_g3", "from_node": "platform_6_south", "to_node": "gate_3_east", "distance_m": 50, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+
+    {"id": "e_p1n_fobn", "from_node": "platform_1_north", "to_node": "fob_north_p1", "distance_m": 15, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_fobn_p1_p23", "from_node": "fob_north_p1", "to_node": "fob_north_p2_3", "distance_m": 40, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_fobn_p23_p2n", "from_node": "fob_north_p2_3", "to_node": "platform_2_north", "distance_m": 15, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_fobn_p23_p45", "from_node": "fob_north_p2_3", "to_node": "fob_north_p4_5", "distance_m": 40, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_fobn_p45_p4n", "from_node": "fob_north_p4_5", "to_node": "platform_4_north", "distance_m": 15, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true},
+    {"id": "e_fobn_p45_p6", "from_node": "fob_north_p4_5", "to_node": "fob_north_p6", "distance_m": 40, "has_stairs": false, "has_lift": false, "is_step_free": true, "is_active": true},
+    {"id": "e_fobn_p6_p6n", "from_node": "fob_north_p6", "to_node": "platform_6_north", "distance_m": 15, "has_stairs": true, "has_lift": false, "is_step_free": false, "is_active": true}
+  ]
+}

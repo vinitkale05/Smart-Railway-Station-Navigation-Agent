@@ -33,9 +33,21 @@ async def serve_spa_index(request):
             return FileResponse(static_index)
     return JSONResponse({"message": "Smart Railway Station Navigation Agent API Running."})
 
+async def serve_testing_video(request):
+    candidates = [
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "testing_demonstration_video.mp4"),
+        os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs", "testing_demonstration_video.mp4")
+    ]
+    for vid in candidates:
+        if os.path.exists(vid):
+            return FileResponse(vid, media_type="video/mp4")
+    return JSONResponse({"error": "Demonstration video not found"}, status_code=404)
+
 routes = [
     Route("/health", health_check, methods=["GET"]),
     Route("/", serve_spa_index, methods=["GET"]),
+    Route("/video", serve_testing_video, methods=["GET"]),
+    Route("/testing_demonstration_video.mp4", serve_testing_video, methods=["GET"]),
     
     # Sessions
     Route("/api/sessions", create_session, methods=["POST"]),
